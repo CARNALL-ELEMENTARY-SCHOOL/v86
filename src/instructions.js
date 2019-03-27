@@ -1439,7 +1439,7 @@ t[0xFE] = cpu => { cpu.read_modrm_byte();
 		
 		case (8):
 		var data = cpu.read_write_e8(); cpu.write_e8(cpu.dec8(data));
-		break:
+		break;
 		
 		default:
 		cpu.todo();
