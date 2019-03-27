@@ -1431,18 +1431,19 @@ t[0xFD] = cpu => {
 t[0xFE] = cpu => { cpu.read_modrm_byte();
     var mod = cpu.modrm_byte & 56;
 
-    if(mod === 0)
-    {
+    switch (mod)
+	{
+	    case (0):
         var data = cpu.read_write_e8(); cpu.write_e8(cpu.inc8(data));
-    }
-    else if(mod === 8)
-    {
-        var data = cpu.read_write_e8(); cpu.write_e8(cpu.dec8(data));
-    }
-    else
-    {
-        cpu.todo();
-    }
+		break;
+		
+		case (8):
+		var data = cpu.read_write_e8(); cpu.write_e8(cpu.dec8(data));
+		break:
+		
+		default:
+		cpu.todo();
+	}
 };
 t16[0xFF] = cpu => { cpu.read_modrm_byte();
     switch(cpu.modrm_byte >> 3 & 7)
@@ -2206,25 +2207,26 @@ t[0x2E] = cpu => {
     cpu.flags_changed &= ~(1 | flag_parity | flag_zero);
     cpu.flags &= ~(1 | flag_parity | flag_zero);
 
-    if(x > y)
-    {
-    }
-    else if(y > x)
-    {
-        cpu.flags |= 1;
-    }
-    else if(x === y)
-    {
-        cpu.flags |= flag_zero;
-    }
-    else
-    {
+    switch (true)
+	{
+	    case (x > y):
+		break;
+		
+		case (y > x):
+		cpu.flags |= 1;
+		break;
+		
+		case (x === y):
+		cpu.flags |= flag_zero;
+		break;
+		
+		default:
         cpu.flags |= 1 | flag_parity | flag_zero;
 
         if (cpu.is_SNaN32(source1[0]) || cpu.is_SNaN32(source2[0])) {
             cpu.invalid_arithmatic();
         }
-    }
+	}
 };
 
 t[0x2F] = cpu => {
@@ -2242,22 +2244,23 @@ t[0x2F] = cpu => {
     cpu.flags_changed &= ~(1 | flag_parity | flag_zero);
     cpu.flags &= ~(1 | flag_parity | flag_zero);
 
-    if(x > y)
-    {
-    }
-    else if(y > x)
-    {
-        cpu.flags |= 1;
-    }
-    else if(x === y)
-    {
-        cpu.flags |= flag_zero;
-    }
-    else
-    {
+    switch (true)
+	{
+	    case (x > y):
+		break;
+		
+		case (y > x):
+		cpu.flags |= 1;
+		break;
+		
+		case (x === y):
+		cpu.flags |= flag_zero;
+		break;
+		
+		default:
         cpu.flags |= 1 | flag_parity | flag_zero;
         cpu.invalid_arithmatic();
-    }
+	}
 };
 
 // wrmsr
@@ -2948,20 +2951,21 @@ t[0x6F] = cpu => {
     cpu.task_switch_test_mmx();
     cpu.read_modrm_byte();
 
-    if((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) == PREFIX_66)
+    switch (true)
     {
+        case ((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) == PREFIX_66):
         // movdqa xmm, xmm/mem128
         let data = cpu.read_xmm_mem128s();
         cpu.write_xmm128s(data[0], data[1], data[2], data[3]);
-    }
-    else if((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) == PREFIX_F3)
-    {
+		break;
+		
+		case ((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) == PREFIX_F3):
         // movdqu xmm, xmm/m128
         let data = cpu.read_xmm_mem128s_unaligned();
         cpu.write_xmm128s(data[0], data[1], data[2], data[3]);
-    }
-    else
-    {
+		break;
+		
+		default:
         // movq mm, mm/m64
         dbg_assert((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) == 0);
         let data = cpu.read_mmx_mem64s();
@@ -2973,8 +2977,9 @@ t[0x70] = cpu => {
     cpu.task_switch_test_mmx();
     cpu.read_modrm_byte();
 
-    if((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) === PREFIX_66)
-    {
+	switch (true)
+	{
+    	case ((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) === PREFIX_66):
         // pshufd xmm, xmm/mem128
         let source = cpu.read_xmm_mem128s();
         let order = cpu.read_op8();
@@ -2985,9 +2990,9 @@ t[0x70] = cpu => {
             source[order >> 4 & 3],
             source[order >> 6 & 3]
         );
-    }
-    else if((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) === PREFIX_F2)
-    {
+		break;
+		
+    	case ((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) === PREFIX_F2):
         // pshuflw xmm, xmm/m128, imm8
         let source = cpu.read_xmm_mem128s();
         let source16 = new Uint16Array(source.buffer);
@@ -2999,9 +3004,9 @@ t[0x70] = cpu => {
             source[2],
             source[3]
         );
-    }
-    else if((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) === PREFIX_F3)
-    {
+		break;
+		
+    	case ((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) === PREFIX_F3):
         // pshufhw xmm, xmm/m128, imm8
         let source = cpu.read_xmm_mem128s();
         let source16 = new Uint16Array(source.buffer);
@@ -3013,9 +3018,9 @@ t[0x70] = cpu => {
             source16[order & 3 | 4] | source16[order >> 2 & 3 | 4] << 16,
             source16[order >> 4 & 3 | 4] | source16[order >> 6 & 3 | 4] << 16
         );
-    }
-    else
-    {
+		break;
+		
+    	default:
         // pshufw mm1, mm2/m64, imm8
         dbg_assert((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) == 0);
         let source = cpu.read_mmx_mem64s();
@@ -3034,7 +3039,8 @@ t[0x70] = cpu => {
         let high = word2 | word3 << 16;
 
         cpu.write_mmx64s(low, high);
-    }
+	}
+
 };
 t[0x71] = cpu => {
     cpu.read_modrm_byte();
@@ -3405,54 +3411,56 @@ t[0x7E] = cpu => {
     cpu.task_switch_test_mmx();
     cpu.read_modrm_byte();
 
-    if((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) === PREFIX_F3)
-    {
+    switch (true)
+	{
+		case ((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) === PREFIX_F3):
         // movq xmm, xmm/mem64
         let data = cpu.read_xmm_mem64s();
         cpu.write_xmm128s(data[0], data[1], 0, 0);
-    }
-    else if((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) == PREFIX_66)
-    {
+		break;
+		
+		case ((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) == PREFIX_66):
         // movd r/m32, xmm
         let data = cpu.read_xmm64s();
         cpu.set_e32(data[0]);
-    }
-    else
-    {
+		break;
+		
+		default:
         // movd r/m32, mm
         dbg_assert((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) == 0);
         let data = cpu.read_mmx64s();
         cpu.set_e32(data[0]);
-    }
+	}
 };
 t[0x7F] = cpu => {
     cpu.task_switch_test_mmx();
     cpu.read_modrm_byte();
 
-    if((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) == PREFIX_F3)
-    {
+    switch (true)
+	{
+		case ((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) == PREFIX_F3):
         // movdqu xmm/m128, xmm
         let data = cpu.read_xmm128s();
         dbg_assert(cpu.modrm_byte < 0xC0);
         let addr = cpu.modrm_resolve(cpu.modrm_byte);
         cpu.safe_write128(addr, data[0], data[1], data[2], data[3]);
-    }
-    else if((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) == PREFIX_66)
-    {
+		break;
+		
+		case ((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) == PREFIX_66):
         // movdqa xmm/m128, xmm
         let data = cpu.read_xmm128s();
         dbg_assert(cpu.modrm_byte < 0xC0);
         let addr = cpu.modrm_resolve(cpu.modrm_byte);
         cpu.safe_write128(addr, data[0], data[1], data[2], data[3]);
-    }
-    else
-    {
+		break;
+		
+		default:
         // movq mm/m64, mm
         dbg_assert((cpu.prefixes & (PREFIX_MASK_REP | PREFIX_MASK_OPSIZE)) == 0);
 
         let data = cpu.read_mmx64s();
         cpu.set_mmx_mem64s(data[0], data[1]);
-    }
+	}
 };
 
 // jmpcc

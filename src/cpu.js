@@ -677,25 +677,27 @@ CPU.prototype.init = function(settings, device_bus)
     {
         dbg_log("bios config port, index=" + h(value));
 
-        if(value === FW_CFG_SIGNATURE)
-        {
+        switch (value)
+		{
+			case FW_CFG_SIGNATURE:
             // We could pretend to be QEMU here to control certain options in
             // seabios, but for now this isn't needed
             this.fw_value = 0xfab0fab0|0;
-        }
-        else if(value === FW_CFG_RAM_SIZE)
-        {
+			break;
+			
+			case FW_CFG_RAM_SIZE:
             this.fw_value = this.memory_size;
-        }
-        else if(value === FW_CFG_NB_CPUS)
-        {
-            this.fw_value = 1;
-        }
-        else
-        {
+			break;
+			
+			case FW_CFG_NB_CPUS:
+			this.fw_value = 1;
+			break;
+			
+			default:
             dbg_assert(false, "Unimplemented fw index: " + h(value));
             this.fw_value = 0;
-        }
+			 
+		}
     });
 
     if(DEBUG)
