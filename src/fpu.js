@@ -545,14 +545,14 @@ FPU.prototype.store_m80 = function(addr, n)
 
     switch(true)
 	{
-		switch (exponent === 0x7FF):
+		case (exponent === 0x7FF):
         // all bits set (NaN and infinity)
         exponent = 0x7FFF;
         low = 0;
         high = 0x80000000 | (this.float64_int[1] & 0x80000) << 11;
         break;
 
-        switch (exponent === 0):
+        case (exponent === 0):
         // zero and denormal numbers
         // Just assume zero for now
         low = 0;
