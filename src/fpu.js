@@ -154,21 +154,23 @@ FPU.prototype.fcom = function(y)
 
     this.status_word &= ~FPU_RESULT_FLAGS;
 
-    if(x > y)
-    {
-    }
-    else if(y > x)
-    {
-        this.status_word |= FPU_C0;
-    }
-    else if(x === y)
-    {
-        this.status_word |= FPU_C3;
-    }
-    else
-    {
-        this.status_word |= FPU_C0 | FPU_C2 | FPU_C3;
-    }
+	switch(true)
+	{
+		
+	    case (x > y):
+		break;
+		
+		case (y > x):
+		this.status_word |= FPU_C0;
+		break;
+		
+		case (x === y):
+		this.status_word |= FPU_C3;
+		break;
+		
+		default:
+		this.status_word |= FPU_C0 | FPU_C2 | FPU_C3;
+	}
 }
 
 FPU.prototype.fucom = function(y)
@@ -185,21 +187,23 @@ FPU.prototype.fcomi = function(y)
     this.cpu.flags_changed &= ~(1 | flag_parity | flag_zero);
     this.cpu.flags &= ~(1 | flag_parity | flag_zero);
 
-    if(x > y)
-    {
-    }
-    else if(y > x)
-    {
-        this.cpu.flags |= 1;
-    }
-    else if(x === y)
-    {
-        this.cpu.flags |= flag_zero;
-    }
-    else
-    {
-        this.cpu.flags |= 1 | flag_parity | flag_zero;
-    }
+	switch(true)
+	{
+		
+	case (x > y):
+	break;
+		
+	case (y > x):
+	this.cpu.flags |= 1;
+	break;
+		
+	case (x === y):
+	this.cpu.flags |= flag_zero;
+	break;
+		
+	default:
+	this.cpu.flags |= 1 | flag_parity | flag_zero;
+	}
 }
 
 FPU.prototype.fucomi = function(y)
@@ -486,18 +490,17 @@ FPU.prototype.load_m80 = function(addr)
     sign = exponent >> 15;
     exponent &= ~0x8000;
 
-    if(exponent === 0)
-    {
-        // TODO: denormal numbers
-        return 0;
-    }
-
-    if(exponent < 0x7FFF)
-    {
-        exponent -= 0x3FFF;
-    }
-    else
-    {
+    switch(true)
+	{
+		case (exponent === 0):
+		return 0;
+		break;
+		
+		case (exponent < 0x7FFF):
+		exponent -= 0x3FFF;
+		break;
+		
+		default:
         // TODO: NaN, Infinity
         //dbg_log("Load m80 TODO", LOG_FPU);
         this.float64_byte[7] = 0x7F | sign << 7;
@@ -509,7 +512,7 @@ FPU.prototype.load_m80 = function(addr)
         this.float64_int[0] = 0;
 
         return this.float64[0];
-    }
+	}
 
     // Note: some bits might be lost at this point
     var mantissa = low + 0x100000000 * high;
@@ -540,28 +543,29 @@ FPU.prototype.store_m80 = function(addr, n)
         low,
         high;
 
-    if(exponent === 0x7FF)
-    {
+    switch(true)
+	{
+		switch (exponent === 0x7FF):
         // all bits set (NaN and infinity)
         exponent = 0x7FFF;
         low = 0;
         high = 0x80000000 | (this.float64_int[1] & 0x80000) << 11;
-    }
-    else if(exponent === 0)
-    {
+        break;
+
+        switch (exponent === 0):
         // zero and denormal numbers
         // Just assume zero for now
         low = 0;
         high = 0;
-    }
-    else
-    {
+		break;
+		
+		default:
         exponent += 0x3FFF - 0x3FF;
 
         // does the mantissa need to be adjusted?
         low = this.float64_int[0] << 11;
         high = 0x80000000 | (this.float64_int[1] & 0xFFFFF) << 11 | (this.float64_int[0] >>> 21);
-    }
+	}
 
     dbg_assert(exponent >= 0 && exponent < 0x8000);
 
