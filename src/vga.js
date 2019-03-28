@@ -1581,19 +1581,20 @@ VGAScreen.prototype.port3C9_write = function(color_byte)
 
     color_byte = (color_byte & 0x3F) * 255 / 63 | 0;
 
-    if(offset === 0)
-    {
+	switch (offset)
+	{
+		case 0:
         color = color & ~0xFF0000 | color_byte << 16;
-    }
-    else if(offset === 1)
-    {
+		break;
+		
+		case 1:
         color = color & ~0xFF00 | color_byte << 8;
-    }
-    else
-    {
+		break;
+		
+		default:
         color = color & ~0xFF | color_byte;
         dbg_log("dac set color, index=" + h(index) + " value=" + h(color), LOG_VGA);
-    }
+	}
 
     if(this.vga256_palette[index] !== color)
     {
