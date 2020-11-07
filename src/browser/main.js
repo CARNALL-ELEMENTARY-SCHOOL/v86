@@ -692,8 +692,8 @@
 
             "boot_order": settings.boot_order || parseInt($("boot_order").value, 16) || 0,
 
-            "network_relay_url": "wss://relay.widgetry.org/",
-            //"network_relay_url": "ws://localhost:8001/",
+            //"network_relay_url": "wss://relay.widgetry.org/",
+            "network_relay_url": "ws://34.68.77.146:8080/",
 
             "bios": bios,
             "vga_bios": vga_bios,
