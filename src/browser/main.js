@@ -356,16 +356,12 @@
             {
                 id: "reactos",
                 memory_size: 256 * 1024 * 1024,
-                cdrom: {
-                    "url": HOST + "images/ReactOS-0.4.9-RC-Live.iso",
+                hda: {
+                    "url": HOST + "https://bennottelling.com/assets/downloads/ros.raw",
                     "async": true,
                 },
-                state: {
-                    "url": HOST + "images/reactos_state.bin",
-                    "size": 276971224,
-                },
                 name: "ReactOS",
-                description: 'Running <a href="https://reactos.org/">ReactOS</a>',
+                description: 'Running <a href="https://bennottelling.com/reactos/ros_online/">ReactOS</a>',
             },
         ];
 
