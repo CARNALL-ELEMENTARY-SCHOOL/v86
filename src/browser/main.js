@@ -357,7 +357,7 @@
                 id: "reactos",
                 memory_size: 256 * 1024 * 1024,
                 hda: {
-                    "url": HOST + "http://ros.bennottelling.com/images/ros.raw",
+                    "url": HOST + "https://ros.bennottelling.com/images/ros.raw",
                     "async": true,
                 },
                 name: "ReactOS",
@@ -692,8 +692,8 @@
 
             "boot_order": settings.boot_order || parseInt($("boot_order").value, 16) || 0,
 
-            //"network_relay_url": "wss://relay.widgetry.org/",
-            "network_relay_url": "ws://34.68.77.146:8080/",
+            "network_relay_url": "wss://relay.widgetry.org/",
+            //"network_relay_url": "ws://34.68.77.146:8080/",
 
             "bios": bios,
             "vga_bios": vga_bios,
