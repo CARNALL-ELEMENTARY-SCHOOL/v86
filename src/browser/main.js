@@ -357,7 +357,7 @@
                 id: "reactos",
                 memory_size: 256 * 1024 * 1024,
                 hda: {
-                    "url": HOST + "https://bennottelling.com/assets/downloads/ros.raw",
+                    "url": HOST + "http://ros.bennottelling.com/images/ros.raw",
                     "async": true,
                 },
                 name: "ReactOS",
