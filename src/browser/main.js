@@ -31,7 +31,6 @@
     }
 
     function format_timestamp(time)
-    function format_timestamp(time)
     {
         if(time < 60)
         {
