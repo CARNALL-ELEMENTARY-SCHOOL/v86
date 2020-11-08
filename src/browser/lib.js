@@ -195,7 +195,7 @@ var ASYNC_SAFE = false;
         this.filename = filename;
 
         /** @const */
-        this.block_size = 256 * 4;
+        this.block_size = 256;
         this.byteLength = size;
 
         this.loaded_blocks = {};
@@ -516,7 +516,7 @@ var ASYNC_SAFE = false;
         this.byteLength = file.size;
 
         /** @const */
-        this.block_size = 256 * 4;
+        this.block_size = 256;
         this.loaded_blocks = {};
 
         this.onload = undefined;
