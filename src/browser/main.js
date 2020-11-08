@@ -31,6 +31,7 @@
     }
 
     function format_timestamp(time)
+    function format_timestamp(time)
     {
         if(time < 60)
         {
@@ -358,7 +359,7 @@
                 memory_size: 256 * 1024 * 1024,
                 hda: {
                     "url": HOST + "https://ros.bennottelling.com/images/ros.raw",
-                    "async": true,
+                    "async": false,
                 },
                 name: "ReactOS",
                 description: 'Running <a href="https://bennottelling.com/reactos/ros_online/">ReactOS</a>',
